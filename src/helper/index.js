@@ -22,14 +22,20 @@ function getRule (ruleName) {
   }
 }
 
+//regex list
+function regexList () {
+  let regList = {
+    email:/\S+@\S+\.\S+/
+  }
+  return regList
+}
+
 function checkNode (element) {
   let ruleName = element.getAttribute('rule')
   if (element.nodeName === 'INPUT') {
     validateInputNode(element,ruleName)
   }
 }
-
-
 
 function returnUnvalidatedElement (element) {
   let errorStyle = element.getAttribute('error-style')
@@ -52,6 +58,15 @@ function ruleCheckLength (element, length) {
   }
 }
 
+function ruleCheckEmail (element, value) {
+  if (value) {
+    if (!regexList().email.test(element.value)) {
+      return returnUnvalidatedElement(element)
+    }
+  }
+}
+
+
 function validateInputNode (element, ruleName) {
   let ruleList = getRule(ruleName)
   for(let key in ruleList){
@@ -62,6 +77,9 @@ function validateInputNode (element, ruleName) {
     }
     if (key === 'length') {
       ruleCheckLength(element,ruleList[key])
+    }
+    if (key === 'email') {
+      ruleCheckEmail(element,ruleList[key])
     }
   }
 }
