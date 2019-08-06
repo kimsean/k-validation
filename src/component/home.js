@@ -44,7 +44,8 @@ export default class Home extends React.Component {
           </select> */}
           <button
           onClick={(event) => {
-            validate("form1",this.state.rules)
+            let valid = validate("form1",this.state.rules)
+            console.log(valid)
           }}>Submit</button>
         </div>
       </div>

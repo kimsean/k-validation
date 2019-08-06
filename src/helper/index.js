@@ -8,8 +8,21 @@ var validate = function (formName, rules) {
   try {
     GlobalRules = rules
     let elements = document.querySelectorAll(`[formref='${formName}']`)
+    let validateList = []
     for (let el = 0; el < elements.length; el++ ) {
-      checkNode(elements[el])
+      checkNode(elements[el],validateList)
+    }
+    let all_validate = true
+    for (let elem_val = 0; elem_val < validateList.length; elem_val++) {
+      if (!validateList[elem_val]) {
+        all_validate = false
+        break
+      }
+    }
+    if (all_validate) {
+      return true
+    } else {
+      return false
     }
   } catch (err) { console.log(err) }
 }
@@ -30,11 +43,11 @@ function regexList () {
   return regList
 }
 
-function checkNode (element) {
+function checkNode (element, list) {
   let ruleName = element.getAttribute('rule')
   clearClass(element)
   if (element.nodeName === 'INPUT') {
-    validateInputNode(element,ruleName)
+    validateInputNode(element,ruleName, list)
   }
 }
 
@@ -49,20 +62,29 @@ function returnUnvalidatedElement (element) {
 
 function ruleCheckRequired(element) {
   if(!element.value || element.value.length === 0){
-    return returnUnvalidatedElement(element)
+    returnUnvalidatedElement(element)
+    return false
+  } else {
+    return true
   }
 }
 
 function ruleCheckLength (element, length) {
   if (element.value.length > length) {
-    return returnUnvalidatedElement(element)
+    returnUnvalidatedElement(element)
+    return false
+  } else {
+    return true
   }
 }
 
 function ruleCheckEmail (element, value) {
   if (value) {
     if (!regexList().email.test(element.value)) {
-      return returnUnvalidatedElement(element)
+      returnUnvalidatedElement(element)
+      return false
+    } else {
+      return true
     }
   }
 }
@@ -74,20 +96,25 @@ function clearClass(element) {
   }
 }
 
-function validateInputNode (element, ruleName) {
+function validateInputNode (element, ruleName, list) {
   let ruleList = getRule(ruleName)
   for(let key in ruleList){
     if (key === 'required') {
       if (ruleList[key] === true) {
-        ruleCheckRequired(element,ruleList[key])
+        let validated = ruleCheckRequired(element,ruleList[key])
+        list.push(validated)
       }
     }
-    if (key === 'length') {
-      ruleCheckLength(element,ruleList[key])
+    else if (key === 'length') {
+      let validated = ruleCheckLength(element,ruleList[key])
+      list.push(validated)
     }
-    if (key === 'email') {
-      ruleCheckEmail(element,ruleList[key])
+    else if (key === 'email') {
+      let validated = ruleCheckEmail(element,ruleList[key])
+      list.push(validated)
     }
   }
 }
 export default validate
+
+
