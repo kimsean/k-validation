@@ -32,6 +32,7 @@ function regexList () {
 
 function checkNode (element) {
   let ruleName = element.getAttribute('rule')
+  clearClass(element)
   if (element.nodeName === 'INPUT') {
     validateInputNode(element,ruleName)
   }
@@ -66,6 +67,12 @@ function ruleCheckEmail (element, value) {
   }
 }
 
+function clearClass(element) {
+  let errorStyle = element.getAttribute('error-style')
+  if (errorStyle) {
+    element.classList.remove(errorStyle)
+  }
+}
 
 function validateInputNode (element, ruleName) {
   let ruleList = getRule(ruleName)

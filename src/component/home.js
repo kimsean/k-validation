@@ -24,7 +24,6 @@ export default class Home extends React.Component {
           required: true
         },
         EmailRule: {
-          length: 5,
           required: true,
           email: true
         }
