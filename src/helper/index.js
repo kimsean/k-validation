@@ -4,6 +4,8 @@
   //error-style
 
 let GlobalRules
+let GlobalRadioElements = []
+
 var validate = function (formName, rules) {
   try {
     GlobalRules = rules
@@ -12,6 +14,7 @@ var validate = function (formName, rules) {
     for (let el = 0; el < elements.length; el++ ) {
       checkNode(elements[el],validateList)
     }
+    checkRadioButtons(validateList)
     let all_validate = true
     for (let elem_val = 0; elem_val < validateList.length; elem_val++) {
       if (!validateList[elem_val]) {
@@ -25,6 +28,61 @@ var validate = function (formName, rules) {
       return false
     }
   } catch (err) { console.log(err) }
+}
+
+function checkRadioButtons(list) {
+  if (GlobalRadioElements.length > 0) {
+    let final_checking = []
+    let groupedRadio = {}
+    for (let el = 0; el < GlobalRadioElements.length; el++) {
+      let element = GlobalRadioElements[el]
+      let element_name = GlobalRadioElements[el].getAttribute('name')
+      if (!groupedRadio[element_name]) {
+        groupedRadio[element_name] = [element]
+      } else {
+        groupedRadio[element_name].push(element)
+      }
+    }
+    let RadioValues = {}
+    for (let key in groupedRadio) {
+      for (let x = 0; x < groupedRadio[key].length; x++) {
+        if (!RadioValues[key]) {
+          RadioValues[key] = [groupedRadio[key][x].checked]
+        } else {
+          RadioValues[key].push(groupedRadio[key][x].checked)
+        }
+      }
+    }
+    let validRadioGroupNames = []
+    let unValidRadioGroupNames = []
+    for (let key in RadioValues) {
+      let check = false
+      for (let x = 0; x < RadioValues[key].length; x++) {
+        if (RadioValues[key][x]) {
+          check = true
+        }
+      }
+      if (check) {
+        validRadioGroupNames.push(key)
+      } else {
+        unValidRadioGroupNames.push(key)
+      }
+    }
+    for (let x = 0; x < validRadioGroupNames.length; x++) {
+      list.push(true)
+    }
+    for (let x = 0; x < unValidRadioGroupNames.length; x++) {
+      list.push(false)
+    }
+    if (unValidRadioGroupNames.length > 0) {
+      for (let x = 0; x < unValidRadioGroupNames.length; x++) {
+        let elements = document.querySelectorAll(`[name='${unValidRadioGroupNames[x]}']`)
+        for (let i = 0; i < elements.length; i++) {
+          
+        }
+      }
+    }
+  }
 }
 
 function getRule (ruleName) {
@@ -45,10 +103,12 @@ function regexList () {
 
 function checkNode (element, list) {
   let ruleName = element.getAttribute('rule')
+  let element_tupe = element.getAttribute('type')
   clearClass(element)
-  if (element.nodeName === 'INPUT') {
-    validateInputNode(element,ruleName, list)
+  if (element_tupe === 'radio') {
+    GlobalRadioElements.push(element)
   }
+  validateNode(element,ruleName, list)
 }
 
 function returnUnvalidatedElement (element) {
@@ -96,7 +156,7 @@ function clearClass(element) {
   }
 }
 
-function validateInputNode (element, ruleName, list) {
+function validateNode (element, ruleName, list) {
   let ruleList = getRule(ruleName)
   for(let key in ruleList){
     if (key === 'required') {
