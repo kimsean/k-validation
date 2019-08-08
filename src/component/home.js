@@ -46,10 +46,12 @@ export default class Home extends React.Component {
             <option value="2">2</option>
           </select>
           <br/>
-          <input formref="form1" rule="RadioRule" k-validate="true" type="radio" name="gender" value="male"/>
-          <input formref="form1" rule="RadioRule" k-validate="true" type="radio" name="gender" value="female"/>
-          <input formref="form1" rule="RadioRule" k-validate="true" type="radio" name="gender" value="other"/>
-
+          <span k-radio-group="gender" error-style="error3">
+            <input formref="form1" rule="RadioRule" k-validate="true" type="radio" name="gender" value="male"/>
+            <input formref="form1" rule="RadioRule" k-validate="true" type="radio" name="gender" value="female"/>
+            <input formref="form1" rule="RadioRule" k-validate="true" type="radio" name="gender" value="other"/>
+          </span>
+          
           <br/>
           <br/>
           <input className="testing" k-validate="true" type="radio" name="location" value="male"/>

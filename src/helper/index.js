@@ -76,9 +76,9 @@ function checkRadioButtons(list) {
     }
     if (unValidRadioGroupNames.length > 0) {
       for (let x = 0; x < unValidRadioGroupNames.length; x++) {
-        let elements = document.querySelectorAll(`[name='${unValidRadioGroupNames[x]}']`)
+        let elements = document.querySelectorAll(`[k-radio-group='${unValidRadioGroupNames[x]}']`)
         for (let i = 0; i < elements.length; i++) {
-          
+          returnUnvalidatedElement(elements[i])
         }
       }
     }
